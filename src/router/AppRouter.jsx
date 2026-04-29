@@ -15,6 +15,7 @@ import BillsPage          from '@/pages/bills/BillsPage'
 import TransactionsPage   from '@/pages/transactions/TransactionsPage'
 import ExpensesPage       from '@/pages/expenses/ExpensesPage'
 import GoalsPage          from '@/pages/goals/GoalsPage'
+import BudgetsPage        from '@/pages/budgets/BudgetsPage'
 
 // Placeholder for pages not yet built
 function ComingSoon({ name }) {
@@ -55,6 +56,7 @@ export function AppRouter() {
               <Route path="/transactions" element={<TransactionsPage />} />
               <Route path="/bills"        element={<BillsPage />} />
               <Route path="/expenses"     element={<ExpensesPage />} />
+              <Route path="/budgets"      element={<BudgetsPage />} />
               <Route path="/goals"        element={<GoalsPage />} />
               <Route path="/settings"     element={<SettingsPage />} />
             </Route>

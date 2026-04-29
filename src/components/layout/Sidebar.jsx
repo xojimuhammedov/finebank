@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   Receipt,
   PieChart,
+  Wallet,
   Target,
   Settings,
   LogOut,
@@ -19,6 +20,7 @@ const navItems = [
   { to: '/transactions', label: 'Transactions',   icon: ArrowLeftRight   },
   { to: '/bills',        label: 'Bills',          icon: Receipt          },
   { to: '/expenses',     label: 'Expenses',       icon: PieChart         },
+  { to: '/budgets',      label: 'Budgets',        icon: Wallet           },
   { to: '/goals',        label: 'Goals',          icon: Target           },
   { to: '/settings',     label: 'Settings',       icon: Settings         },
 ]
