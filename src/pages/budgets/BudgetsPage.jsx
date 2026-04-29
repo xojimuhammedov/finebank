@@ -6,7 +6,7 @@ import {
 } from 'lucide-react';
 import BudgetModal from './BudgetModal';
 import { INITIAL_BUDGETS, BUDGET_STATUSES } from './constants';
-import { EXPENSE_CATEGORIES } from '@/pages/transactions/constants';
+import { useSettings } from '@/context/SettingsContext';
 
 // ─── Category icons ────────────────────────────────────────────────────────────
 const CATEGORY_CONFIG = {
@@ -61,6 +61,9 @@ function progressColor(pct) {
 
 // ─── Main Component ─────────────────────────────────────────────────────────────
 export default function BudgetsPage() {
+  const { categories } = useSettings();
+  const expenseCategories = categories.filter(c => c.type === 'expense').map(c => c.name);
+
   // ── State ──────────────────────────────────────────────────────────────────────
   const [budgets, setBudgets] = useState(() => {
     const saved = localStorage.getItem('finebank_budgets');
@@ -151,13 +154,6 @@ export default function BudgetsPage() {
     .filter((b) => b.month === selectedMonth)
     .map((b) => b.category);
 
-  // Available months for the month picker
-  const availableMonths = useMemo(() => {
-    const set = new Set(budgets.map((b) => b.month));
-    set.add(selectedMonth);
-    return [...set].sort();
-  }, [budgets, selectedMonth]);
-
   return (
     <div className="p-8 max-w-7xl mx-auto space-y-6">
       {/* Header */}
@@ -247,7 +243,7 @@ export default function BudgetsPage() {
               className="px-3 py-2 border border-gray-200 rounded-lg text-sm bg-white outline-none focus:border-[#299D91] focus:ring-1 focus:ring-[#299D91]"
             >
               <option value="all">All Categories</option>
-              {EXPENSE_CATEGORIES.map((c) => (
+              {expenseCategories.map((c) => (
                 <option key={c} value={c}>
                   {c}
                 </option>

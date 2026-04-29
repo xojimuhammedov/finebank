@@ -1,13 +1,22 @@
 import { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
-import { INCOME_CATEGORIES, EXPENSE_CATEGORIES, ACCOUNTS, STATUSES } from './constants';
+import { useSettings } from '@/context/SettingsContext';
+import { STATUSES } from './constants';
 
 export default function TransactionModal({ isOpen, onClose, onSave, initialData }) {
+  const { categories, accounts } = useSettings();
+  
+  const incomeCats = categories.filter(c => c.type === 'income').map(c => c.name);
+  const expenseCats = categories.filter(c => c.type === 'expense').map(c => c.name);
+  
+  // Only show active accounts for new transactions, but include current account for edits even if inactive
+  const availableAccounts = accounts.filter(a => a.status === 'active' || (initialData && a.name === initialData.account));
+
   const [formData, setFormData] = useState({
     type: 'expense',
     date: new Date().toISOString().slice(0, 10),
-    category: EXPENSE_CATEGORIES[0],
-    account: ACCOUNTS[0],
+    category: expenseCats[0] || '',
+    account: availableAccounts[0]?.name || '',
     amount: '',
     note: '',
     status: 'completed'
@@ -21,15 +30,15 @@ export default function TransactionModal({ isOpen, onClose, onSave, initialData 
         setFormData({
           type: 'expense',
           date: new Date().toISOString().slice(0, 10),
-          category: EXPENSE_CATEGORIES[0],
-          account: ACCOUNTS[0],
+          category: expenseCats[0] || '',
+          account: availableAccounts[0]?.name || '',
           amount: '',
           note: '',
           status: 'completed'
         });
       }
     }
-  }, [isOpen, initialData]);
+  }, [isOpen, initialData, expenseCats, availableAccounts]);
 
   if (!isOpen) return null;
 
@@ -41,7 +50,7 @@ export default function TransactionModal({ isOpen, onClose, onSave, initialData 
       
       // Auto-update category list if type changes
       if (name === 'type') {
-        updated.category = value === 'income' ? INCOME_CATEGORIES[0] : EXPENSE_CATEGORIES[0];
+        updated.category = value === 'income' ? incomeCats[0] : expenseCats[0];
       }
       
       return updated;
@@ -57,7 +66,7 @@ export default function TransactionModal({ isOpen, onClose, onSave, initialData 
     });
   };
 
-  const categories = formData.type === 'income' ? INCOME_CATEGORIES : EXPENSE_CATEGORIES;
+  const currentCategories = formData.type === 'income' ? incomeCats : expenseCats;
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
@@ -129,7 +138,7 @@ export default function TransactionModal({ isOpen, onClose, onSave, initialData 
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-[#299D91] focus:ring-1 focus:ring-[#299D91] text-sm bg-white"
               >
-                {categories.map(c => <option key={c} value={c}>{c}</option>)}
+                {currentCategories.map(c => <option key={c} value={c}>{c}</option>)}
               </select>
             </div>
 
@@ -142,7 +151,7 @@ export default function TransactionModal({ isOpen, onClose, onSave, initialData 
                 onChange={handleChange}
                 className="w-full px-3 py-2 border border-gray-200 rounded-lg outline-none focus:border-[#299D91] focus:ring-1 focus:ring-[#299D91] text-sm bg-white"
               >
-                {ACCOUNTS.map(a => <option key={a} value={a}>{a}</option>)}
+                {availableAccounts.map(a => <option key={a.id} value={a.name}>{a.name}</option>)}
               </select>
             </div>
 

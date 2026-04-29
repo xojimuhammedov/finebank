@@ -1,5 +1,6 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from '@/context/AuthContext'
+import { SettingsProvider } from '@/context/SettingsContext'
 import { ProtectedRoute, PublicRoute } from './guards'
 import { DashboardLayout } from '@/components/layout/DashboardLayout'
 
@@ -37,35 +38,37 @@ function ComingSoon({ name }) {
 export function AppRouter() {
   return (
     <BrowserRouter>
-      <AuthProvider>
-        <Routes>
-          {/* Default redirect */}
-          <Route path="/" element={<Navigate to="/login" replace />} />
+      <SettingsProvider>
+        <AuthProvider>
+          <Routes>
+            {/* Default redirect */}
+            <Route path="/" element={<Navigate to="/login" replace />} />
 
-          {/* Public auth routes */}
-          <Route element={<PublicRoute />}>
-            <Route path="/login"    element={<LoginPage />} />
-            <Route path="/register" element={<RegisterPage />} />
-          </Route>
-
-          {/* Protected dashboard routes */}
-          <Route element={<ProtectedRoute />}>
-            <Route element={<DashboardLayout />}>
-              <Route path="/dashboard"    element={<DashboardPage />} />
-              <Route path="/balances"     element={<BalancesPage />} />
-              <Route path="/transactions" element={<TransactionsPage />} />
-              <Route path="/bills"        element={<BillsPage />} />
-              <Route path="/expenses"     element={<ExpensesPage />} />
-              <Route path="/budgets"      element={<BudgetsPage />} />
-              <Route path="/goals"        element={<GoalsPage />} />
-              <Route path="/settings"     element={<SettingsPage />} />
+            {/* Public auth routes */}
+            <Route element={<PublicRoute />}>
+              <Route path="/login"    element={<LoginPage />} />
+              <Route path="/register" element={<RegisterPage />} />
             </Route>
-          </Route>
 
-          {/* Catch-all */}
-          <Route path="*" element={<Navigate to="/login" replace />} />
-        </Routes>
-      </AuthProvider>
+            {/* Protected dashboard routes */}
+            <Route element={<ProtectedRoute />}>
+              <Route element={<DashboardLayout />}>
+                <Route path="/dashboard"    element={<DashboardPage />} />
+                <Route path="/balances"     element={<BalancesPage />} />
+                <Route path="/transactions" element={<TransactionsPage />} />
+                <Route path="/bills"        element={<BillsPage />} />
+                <Route path="/expenses"     element={<ExpensesPage />} />
+                <Route path="/budgets"      element={<BudgetsPage />} />
+                <Route path="/goals"        element={<GoalsPage />} />
+                <Route path="/settings"     element={<SettingsPage />} />
+              </Route>
+            </Route>
+
+            {/* Catch-all */}
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          </Routes>
+        </AuthProvider>
+      </SettingsProvider>
     </BrowserRouter>
   )
 }
